@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">TESTTASK</string>
+
+    <!-- No internet connection screen strings -->
+    <string name="There_is_no_internet_connection">There is no internet connection</string>
+    <string name="Try_again">Try again</string>
+
+    <!-- Top bar strings -->
+    <string name="Working_with_GET_request">Working with GET request</string>
+    <string name="Working_with_POST_request">Working with POST request</string>
+
+    <!-- Bottom bar strings -->
+    <string name="Users">Users</string>
+    <string name="Sign_up">Sign_up</string>
+
+</resources>
