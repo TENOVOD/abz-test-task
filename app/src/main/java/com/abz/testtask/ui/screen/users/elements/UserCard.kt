@@ -62,11 +62,14 @@ fun UserCard(user: User) {
                 //name
                 Text(text = user.name, style = Body2RegularSize18)
                 Spacer(Modifier.height(4.dp))
+
                 //Position
                 Text(text = user.position, style = Body3RegularSize14.copy(color = BlackAlpha060))
                 Spacer(Modifier.height(8.dp))
+
                 //email
                 Text(text = user.email, style = Body3RegularSize14, maxLines = 1, overflow = TextOverflow.Ellipsis)
+
                 //phone number
                 Text(text = user.phone, style = Body3RegularSize14)
             }

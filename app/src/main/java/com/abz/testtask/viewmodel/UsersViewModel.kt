@@ -17,34 +17,47 @@ import javax.inject.Inject
 class UsersViewModel @Inject constructor(
     private val usersApi: UsersApi,
     private val connectivityObserver: ConnectivityObserver
-
 ):ViewModel() {
+
     val networkStatus = connectivityObserver.status
+
     private val  _users:MutableStateFlow<List<User>> = MutableStateFlow<List<User>>(emptyList())
     val users: StateFlow<List<User>> get() = _users
+
     var isLoading = mutableStateOf(false)
+
+    //Change this fields for uploading new page of users
     private var currentPage = 1
     private var totalPage = 0
+
     init {
-        loadUsers()
-        connectivityObserver.start()
+        loadUsers() //Loading users when initialize
+        connectivityObserver.start() //Start listening network status
     }
 
+    //When page closed -> stop network listener
     override fun onCleared() {
         super.onCleared()
         connectivityObserver.stop()
     }
 
+    //Load users from server
     fun loadUsers(){
         if(currentPage<=totalPage||totalPage==0){
             viewModelScope.launch {
+
+                //When network status Undefined -> Wait and after get users from server
                 while (networkStatus.value==ConnectivityObserver.Status.Undefined){
                     delay(50)
                 }
+
+                //Check Internet connection
                 if(networkStatus.value == ConnectivityObserver.Status.Available){
                     isLoading.value=true
                     val response = usersApi.fetchUsers(page = currentPage)
                     println(response.users)
+
+                    //Check for duplicates
                     if(!_users.value.contains(response.users[0])){
                         totalPage = response.totalPages
                         _users.value += response.users

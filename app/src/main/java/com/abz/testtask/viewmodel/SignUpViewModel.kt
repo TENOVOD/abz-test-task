@@ -34,7 +34,8 @@ class SignUpViewModel @Inject constructor(
     val networkStatus = connectivityObserver.status
     private val _positions: MutableStateFlow<List<Position>> =
         MutableStateFlow<List<Position>>(emptyList())
-    private var token = ""
+
+    //Registration values
     val positions: StateFlow<List<Position>> get() = _positions
     val name = mutableStateOf("")
     val email = mutableStateOf("")
@@ -43,27 +44,33 @@ class SignUpViewModel @Inject constructor(
     val photoName = mutableStateOf("")
     val photo = mutableStateOf<File?>(null)
 
+    //Error for registration values, when field validation is incorrect
     val nameError = mutableStateOf(false)
     val emailError = mutableStateOf(false)
     val phoneError = mutableStateOf(false)
     val positionIdError = mutableStateOf(false)
     val photoError = mutableStateOf(false)
 
+    //Registration status
     val isLoading = mutableStateOf(false)
     val registrationSuccess = mutableStateOf(false)
+
+    //Permission for showing registration form
     val hasShowedRegistrationResult = mutableStateOf(false)
 
+    //loading position and start network listening
     init {
         loadPositions()
         connectivityObserver.start()
     }
 
+    //stop network listener after closing screen
     override fun onCleared() {
         super.onCleared()
         connectivityObserver.stop()
     }
 
-
+    //change registration values
     fun onNameChanged(newName: String) {
         name.value = newName
         if (nameError.value) validateName()
@@ -80,19 +87,19 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun onPositionSelected(newPositionId: Int) {
-        println("WORK new pos $newPositionId ")
         positionId.value = newPositionId
         if (positionIdError.value) validatePosition()
     }
 
+
+    //set photo name for photo textfield
     fun setPhotoName(newPhoto: String) {
-        println("WORK WORK")
         photoName.value = newPhoto
     }
 
+    //set link to photo/image
     fun setPhotoUri(context: Context, uri: Uri?) {
         viewModelScope.launch {
-            Log.d("TESTURI",uri.toString())
             if (uri!=null){
                 photo.value = getFileFromUri(context = context, uri = uri)
                 validatePhoto()
@@ -102,33 +109,32 @@ class SignUpViewModel @Inject constructor(
 
     }
 
-    // Функції валідації
+    // Validation
     private fun validateName() {
         nameError.value = !(name.value.length in 2..60)
-        println("Name is valid = ${nameError.value}")
     }
 
     private fun validateEmail() {
         val emailPattern = Patterns.EMAIL_ADDRESS
         emailError.value = !emailPattern.matcher(email.value).matches()
-        println("Email is valid = ${emailError.value}")
     }
 
     private fun validatePhone() {
         phoneError.value = !(phone.value.startsWith("+380") && phone.value.length == 13)
-        println("Phone is valid = ${phoneError.value}")
     }
 
     private fun validatePosition() {
         positionIdError.value = positionId.value == null
-        println("Position is valid = ${positionIdError.value}")
     }
 
     private fun validatePhoto() {
         val photoFile = photo.value
         if (photoFile != null) {
+            //validating image size <5MB
             val isValidSize = photoFile.length() <= 5 * 1024 * 1024
+            //validating image format only jpg and jpeg
             val isValidFormat = photoFile.extension.lowercase() in listOf("jpg", "jpeg")
+            //validating image size min 70x70 px
             val hasValidDimensions = checkPhotoDimensions(photoFile)
 
             photoError.value = !(isValidSize && isValidFormat && hasValidDimensions)
@@ -137,23 +143,25 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+
+    //Load positions from server
     fun loadPositions() {
         viewModelScope.launch {
-            println("1" + networkStatus.value)
             if (networkStatus.value == ConnectivityObserver.Status.Available) {
                 val response = userApi.getPosition()
                 _positions.value = response.positions
             }
-            println("3" + networkStatus.value)
         }
 
     }
 
+    //Get token from server for registration
     private suspend fun getToken(): String {
         val response = userApi.getToken()
         return response.token
     }
 
+    //Validation all values
     private fun isFormValid(): Boolean {
         validateName()
         validateEmail()
@@ -169,8 +177,9 @@ class SignUpViewModel @Inject constructor(
         ).contains(true)
     }
 
+    //Registration
     fun registerUser() {
-        println("FORM ${isFormValid()}")
+        //validating all values
         if (isFormValid()) return
         isLoading.value=true
         viewModelScope.launch {
@@ -183,20 +192,15 @@ class SignUpViewModel @Inject constructor(
                     positionId = positionId.value!!,
                     photo = photo.value!!
                 )
-                println("VM1")
                 val token = getToken()
-                println("VM2 + $token")
                 val response = userApi.registrationUser(token,userData)
-                println(response)
+
                 if (response?.userId==-1){
                     registrationSuccess.value = false
                 }else{
                     registrationSuccess.value = true
                 }
-
-                Log.d("TEST", " SUCCESS $userData")
             } catch (e: Exception) {
-                Log.d("TEST", " ERROR")
                 registrationSuccess.value = false
             } finally {
                 isLoading.value = false
@@ -208,6 +212,7 @@ class SignUpViewModel @Inject constructor(
         hasShowedRegistrationResult.value=false
     }
 
+    //validating image size min 70x70 px
     private fun checkPhotoDimensions(photoFile: File): Boolean {
         val options = BitmapFactory.Options().apply {
             inJustDecodeBounds = true
@@ -219,6 +224,7 @@ class SignUpViewModel @Inject constructor(
         return width >= 70 && height >= 70
     }
 
+    //take Uri
     fun createImageUri(context: Context): Uri? {
         val resolver = context.contentResolver
         val contentValues = ContentValues().apply {
@@ -231,6 +237,7 @@ class SignUpViewModel @Inject constructor(
         return resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
     }
 
+    //get File by Uri and set photo name to textfield
     private fun getFileFromUri(context: Context, uri: Uri): File? {
         return try {
             val inputStream = context.contentResolver.openInputStream(uri) ?: return null
@@ -247,6 +254,7 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    //get file name by Uri
     private fun getFileName(context: Context, uri: Uri): String {
         var name = "file_${System.currentTimeMillis()}"
         val cursor = context.contentResolver.query(uri, null, null, null, null)

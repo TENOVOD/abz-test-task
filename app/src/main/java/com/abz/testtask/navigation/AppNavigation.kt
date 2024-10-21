@@ -2,8 +2,6 @@ package com.abz.testtask.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -14,6 +12,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.abz.testtask.ui.screen.signup.SignUpScreen
 import com.abz.testtask.ui.screen.users.UsersScreen
+
+
 
 @Composable
 fun AppNavigation() {
