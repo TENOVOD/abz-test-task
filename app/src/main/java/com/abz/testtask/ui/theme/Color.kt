@@ -13,6 +13,8 @@ val SecondaryBlue = Color(0,189,211)
 //Background color
 val BackgroundColor = Color(255,255,255)
 
+//Error color
+val ErrorColor = Color(203,61,64)
 
 //Buttons color
 //Primary filled button
@@ -25,13 +27,24 @@ val NormalSecondaryColor = Color(255,255,255)
 val PressedSecondaryColor = Color(0,189,211)
 val DisabledSecondaryColor = Color(255,255,255)
 
-//Outlined text fields colors
-val UnfocusedFieldBorderColor = Color(208,207,207)
-val FocusedFieldBorderColor = Color(0,189,211)
-val ErrorFieldBorderColor = Color(208,207,207)
+//Text field colors
+val UnfocusedFieldColor = Color(208,207,207)
+val FocusedFieldColor = Color(0,189,211)
+val ErrorFieldColor = Color(203,61,64)
 
 //Logo text color
 val BlackAlpha087 = Color(0f,0f,0f,0.87f)
+
+//Position text color
+val BlackAlpha060 = Color(0f,0f,0f,0.6f)
+
+//Bottom sheet title
+val BlackAlpha048 = Color(0f,0f,0f,0.48f)
+
+//Bottom bar colors
+val BottomBarBackgroundColor = Color(248,248,248)
+val BottomBarActiveColor = Color(0,189,211)
+val BottomBarInactiveColor = Color(0f,0f,0f,0.6f)
 
 
 

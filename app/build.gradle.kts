@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
+
+    alias(libs.plugins.serialization)
 }
 
 android {
@@ -52,9 +54,37 @@ android {
 
 dependencies {
 
+    //Splash screen
+    implementation(libs.androidx.core.splashscreen)
+
+    //For work with permission
+    implementation (libs.accompanist.permissions)
+
+
+    //Coil (an image loading library)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
+    //ktor
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.serialization.kotlinx.json)
+
+    //Serialization
+    implementation(libs.kotlinx.serialization.json)
+
+
+    //hilt
     implementation(libs.hilt)
     implementation(libs.hilt.compose)
     ksp(libs.hilt.compiler)
+
+    //navigation
+    implementation ("androidx.navigation:navigation-compose:2.8.3")
+
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

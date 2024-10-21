@@ -1,9 +1,9 @@
-package com.abz.testtask.ui.screen
+package com.abz.testtask.ui.situational
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,14 +15,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,40 +29,47 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.abz.testtask.R
 import com.abz.testtask.ui.button.PrimaryButton
-import com.abz.testtask.ui.font.Heading1RegularSize20
-import com.abz.testtask.viewmodel.NoInternetViewModel
+import com.abz.testtask.ui.labels.HeadingElementsWithAnimateScale
+import com.abz.testtask.ui.theme.BackgroundColor
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun NoInternetConnectionScreen(
-    viewModel:NoInternetViewModel= hiltViewModel()
+   modifier: Modifier=Modifier,
+   isStarted: Boolean,
+   onClickTryAgain:()->Unit
 ) {
 
-    var isStarted by remember {
-        mutableStateOf(true)
-    }
-    val isFindingInternetConnection by viewModel.isFindingInternet.collectAsState()
-    val isOnline by viewModel.isOnline.collectAsState()
-    val animationElementScale by animateFloatAsState(if(isStarted)0f else 1f, animationSpec = tween(500))
-    LaunchedEffect(Unit) {
-        isStarted=false
+    var isFindingInternetConnection by remember {
+        mutableStateOf(false)
     }
 
+    val animationElementScale by animateFloatAsState(if(isStarted)0f else 1f, animationSpec = tween(500))
+
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize().background(BackgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
         AnimatedIconsBlock(isStarted = isStarted, isFindingInternetConnection = isFindingInternetConnection)
         Spacer(Modifier.height(24.dp))
-        Text(text = stringResource(R.string.There_is_no_internet_connection), modifier = Modifier.scale(animationElementScale), style = Heading1RegularSize20)
+
+        HeadingElementsWithAnimateScale(textSrc = R.string.There_is_no_internet_connection, isStarted = isStarted)
         Spacer(Modifier.height(24.dp))
-        PrimaryButton(modifier = Modifier.scale(animationElementScale),textSrc = R.string.Try_again, isPressed = isFindingInternetConnection) {
-            viewModel.startProcessFindingInternetConnection()
+        PrimaryButton(modifier = Modifier.scale(animationElementScale),textSrc = R.string.Try_again){
+            CoroutineScope(Dispatchers.IO).launch {
+                onClickTryAgain()
+                isFindingInternetConnection=true
+                delay(100)
+                isFindingInternetConnection=false
+            }
         }
     }
 
@@ -74,7 +78,7 @@ fun NoInternetConnectionScreen(
 
 
 @Composable
-fun AnimatedIconsBlock(isStarted: Boolean, isFindingInternetConnection:Boolean) {
+private fun AnimatedIconsBlock(isStarted: Boolean, isFindingInternetConnection:Boolean) {
 
     val animateMoveElementsFromRightSide by animateDpAsState(
         if (isStarted) 1400.dp else 0.dp,
