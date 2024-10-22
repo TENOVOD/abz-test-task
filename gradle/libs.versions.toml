@@ -19,11 +19,13 @@ composeBom = "2024.10.00"
 ksp = "2.0.21-1.0.25"
 hilt= "2.51.1"
 hiltNavCompose = "1.2.0"
+navigationCompose = "2.8.3"
 
 [libraries]
 
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
 hilt = {module = "com.google.dagger:hilt-android", version.ref = "hilt"}

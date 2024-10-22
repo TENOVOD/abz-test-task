@@ -104,7 +104,8 @@ fun SignUpScreen(
     //For bottom dialog
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
-
+    var isClickedOnGallery by remember { mutableStateOf(false) }
+    var isClickedOnCamera by remember { mutableStateOf(false) }
 
     //For work with uploading image/photo
     val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
@@ -155,7 +156,7 @@ fun SignUpScreen(
         When user provide permission -> open camera
      */
     LaunchedEffect(cameraPermissionState.status) {
-        if (cameraPermissionState.status.isGranted) {
+        if (cameraPermissionState.status.isGranted&&isClickedOnCamera) {
             IOScope.launch {
                 cameraImageUri = viewModel.createImageUri(context)
                 cameraLauncher.launch(cameraImageUri!!)
@@ -164,6 +165,7 @@ fun SignUpScreen(
                 sheetState.hide()
                 showBottomSheet = false
             }
+            isClickedOnCamera=false
         }
     }
 
@@ -173,7 +175,7 @@ fun SignUpScreen(
        When user provide permission -> open gallery in bottom dialog
     */
     LaunchedEffect(readStoragePermissionState.status) {
-        if (readStoragePermissionState.status.isGranted) {
+        if (readStoragePermissionState.status.isGranted&&isClickedOnGallery) {
             IOScope.launch {
                 galleryLauncher.launch("image/*")
             }
@@ -182,6 +184,7 @@ fun SignUpScreen(
                 sheetState.hide()
                 showBottomSheet = false
             }
+            isClickedOnGallery=false
         }
     }
 
@@ -297,6 +300,7 @@ fun SignUpScreen(
                 isActive = showBottomSheet,
                 sheetState = sheetState,
                 openCamera = {
+                    isClickedOnCamera=true
                     if (cameraPermissionState.status.isGranted) {
                         IOScope.launch {
                             cameraImageUri = viewModel.createImageUri(context)
@@ -311,6 +315,7 @@ fun SignUpScreen(
                     }
                 },
                 openGallery = {
+                    isClickedOnGallery=true
                     if (readStoragePermissionState.status.isGranted) {
                         IOScope.launch {
                             galleryLauncher.launch("image/*")
