@@ -95,6 +95,7 @@ fun SignUpScreen(
     val emailError by viewModel.emailError
     val phoneError by viewModel.phoneError
     val photoError by viewModel.photoError
+    val registrationErrors by viewModel.registrationErrors
 
     val isLoading by viewModel.isLoading
     val isRegistrationSuccess by viewModel.registrationSuccess
@@ -352,6 +353,7 @@ fun SignUpScreen(
                 }
                 viewModel.closeRegistrationResult()
             },
+            messages = registrationErrors,
             onClose = {
                 viewModel.closeRegistrationResult()
             }

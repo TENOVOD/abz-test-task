@@ -54,6 +54,7 @@ class SignUpViewModel @Inject constructor(
     //Registration status
     val isLoading = mutableStateOf(false)
     val registrationSuccess = mutableStateOf(false)
+    val registrationErrors = mutableStateOf(mutableListOf<String>())
 
     //Permission for showing registration form
     val hasShowedRegistrationResult = mutableStateOf(false)
@@ -194,9 +195,18 @@ class SignUpViewModel @Inject constructor(
                 )
                 val token = getToken()
                 val response = userApi.registrationUser(token,userData)
-
                 if (response?.userId==-1){
                     registrationSuccess.value = false
+                    val fails =response.fails
+                    if(fails!=null){
+                        if (fails.name!=null) registrationErrors.value.add(fails.name[0])
+                        if (fails.email!=null) registrationErrors.value.add(fails.email[0])
+                        if (fails.phone!=null) registrationErrors.value.add(fails.phone[0])
+                        if (fails.positionId!=null) registrationErrors.value.add(fails.positionId[0])
+                        if (fails.photo!=null) registrationErrors.value.add(fails.photo[0])
+                    }else{
+                        registrationErrors.value.add(response.message)
+                    }
                 }else{
                     registrationSuccess.value = true
                 }

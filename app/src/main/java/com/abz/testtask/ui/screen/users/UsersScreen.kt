@@ -25,10 +25,12 @@ import androidx.compose.ui.draw.scale
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.abz.testtask.R
 import com.abz.testtask.internet.ConnectivityObserver
+import com.abz.testtask.response.User
 import com.abz.testtask.ui.bottombar.BottomBarScreen
 import com.abz.testtask.ui.bottombar.MainButtonBar
 import com.abz.testtask.ui.screen.users.elements.ListOfUsers
 import com.abz.testtask.ui.screen.users.elements.NoUsersBlock
+import com.abz.testtask.ui.screen.users.elements.UserDetailsDialog
 import com.abz.testtask.ui.situational.NoInternetConnectionScreen
 import com.abz.testtask.ui.theme.BackgroundColor
 import com.abz.testtask.ui.topbars.RequestTopBar
@@ -68,16 +70,24 @@ fun UsersScreen(
         animationSpec = tween(600)
     )
 
+    //Users details card
+    var isActiveUsersDetailsDialog by remember {
+        mutableStateOf(false)
+    }
+    var openedUser by remember {
+        mutableStateOf<User?>(null)
+    }
+
     //Starting Animation
     LaunchedEffect(Unit) {
         isStarted = false
     }
 
     LaunchedEffect(usersList.size) {
-        if (usersList.isEmpty()){
-            isStarted=false
-        }else{
-            isStarted=true
+        if (usersList.isEmpty()) {
+            isStarted = false
+        } else {
+            isStarted = true
         }
     }
     DisposableEffect(Unit) {
@@ -102,7 +112,8 @@ fun UsersScreen(
     }
 
 
-    Box(Modifier.fillMaxSize()
+    Box(
+        Modifier.fillMaxSize()
     ) {
 
         //Main Screen
@@ -124,17 +135,26 @@ fun UsersScreen(
             Box(
                 modifier = Modifier
                     .padding(paddingValues)
-                    .fillMaxSize() .background(
+                    .fillMaxSize()
+                    .background(
                         BackgroundColor
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 // Show no users with animation when list is empty
-                if(usersList.isEmpty()){
+                if (usersList.isEmpty()) {
                     NoUsersBlock(isStarted = isStarted)
                 }
                 //Column with users
-                ListOfUsers(usersList, modifier = Modifier.scale(showListWithAnimation), isLoading = isLoading) {
+                ListOfUsers(
+                    usersList,
+                    modifier = Modifier.scale(showListWithAnimation),
+                    isLoading = isLoading,
+                    clickOnCard = {
+                        openedUser=it
+                        isActiveUsersDetailsDialog=true
+                    }
+                ) {
                     viewModel.loadUsers()
                 }
             }
@@ -153,6 +173,11 @@ fun UsersScreen(
                 hasShowNoInternetConnectionScreen = false
             }
         }
+    }
+    openedUser?.let {
+        UserDetailsDialog(isActive = isActiveUsersDetailsDialog, user = it){
+        isActiveUsersDetailsDialog=false
+    }
     }
 
 

@@ -1,5 +1,7 @@
 package com.abz.testtask.ui.screen.users.elements
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,12 +32,21 @@ import com.abz.testtask.response.User
 import com.abz.testtask.ui.font.Body2RegularSize18
 import com.abz.testtask.ui.font.Body3RegularSize14
 import com.abz.testtask.ui.theme.BlackAlpha060
+import com.abz.testtask.ui.theme.SecondaryBlue
 
 
 @Composable
-fun UserCard(user: User) {
+fun UserCard(user: User, clickOnCard:(User)->Unit) {
+
     Box(modifier = Modifier
         .fillMaxWidth()
+        .clickable(
+            onClick = {clickOnCard(user)},
+            indication = ripple(
+                color = SecondaryBlue
+            ),
+            interactionSource = remember{MutableInteractionSource()}
+        )
         .padding(horizontal = 16.dp, vertical = 24.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),

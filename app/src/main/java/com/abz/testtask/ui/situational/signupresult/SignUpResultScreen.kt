@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.abz.testtask.R
 import com.abz.testtask.ui.button.PrimaryButton
+import com.abz.testtask.ui.labels.HeadingElementsColumnWithAnimateScale
 import com.abz.testtask.ui.labels.HeadingElementsWithAnimateScale
 import com.abz.testtask.ui.theme.BackgroundColor
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +38,7 @@ import kotlinx.coroutines.launch
 fun SignUpResultScreen(
     modifier: Modifier=Modifier,
     isSuccess: Boolean,
+    messages:List<String>,
     onClickSuccess: () -> Unit,
     onClickFailed: () -> Unit,
     onClose:()->Unit
@@ -79,8 +81,8 @@ fun SignUpResultScreen(
                     }
                 } else {
                     SignUpFailedAnimation(isStarted = hasShowedLocal)
-                    HeadingElementsWithAnimateScale(
-                        textSrc = R.string.That_email_is_already_registered,
+                    HeadingElementsColumnWithAnimateScale(
+                        messages = messages,
                         isStarted = hasShowedLocal
                     )
                     PrimaryButton(textSrc = R.string.Try_again) {

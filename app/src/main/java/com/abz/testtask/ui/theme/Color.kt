@@ -46,6 +46,7 @@ val BottomBarBackgroundColor = Color(248,248,248)
 val BottomBarActiveColor = Color(0,189,211)
 val BottomBarInactiveColor = Color(0f,0f,0f,0.6f)
 
+val SpacerBetweenCards = Color(222, 222, 222, 255)
 
 
 

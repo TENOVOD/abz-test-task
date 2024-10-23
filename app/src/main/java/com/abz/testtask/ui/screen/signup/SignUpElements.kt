@@ -105,7 +105,6 @@ fun BlockOfPositionSelector(
     selectedPositionId: Int,
     onSelectedPositionId: (Int) -> Unit
 ) {
-
     Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(text = stringResource(R.string.Select_your_position), style = Heading1RegularSize20)
         Column(modifier = Modifier.selectableGroup()) {
